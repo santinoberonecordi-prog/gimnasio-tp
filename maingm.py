@@ -1,93 +1,69 @@
-class Socio:
-    def __init__(self, dni, nombre, tipo_membresia, dias_restantes):
-        self.dni = dni
-        self.nombre = nombre
-        self.tipo_membresia = tipo_membresia
-        self.dias_restantes = dias_restantes
-        self.activo = True
+from Gimnasio import Socio, Gimnasio
 
-    def getInfo(self):
-        print("El DNI es:", self.dni)
-        print("El nombre es:", self.nombre)
-        print("La membresia es:", self.tipo_membresia)
-        print("Los dias restantes son:", self.dias_restantes)
-        if self.activo and self.dias_restantes > 0:
-            print("El estado es: Activo")
-        else:
-            print("El estado es: Inactivo")
+gym = Gimnasio("Space Gym")
 
-    def restarDia(self):
-        if self.dias_restantes > 0:
-            self.dias_restantes = self.dias_restantes - 1
-        
-        if self.dias_restantes <= 0:
-            self.activo = False
+socio1 = Socio("45123456", "Santino Berone", "Musculacion", 5)
+socio2 = Socio("38987654", "Bautista Taborda", "Crossfit", 0)
+gym.setSocio(socio1)
+gym.setSocio(socio2)
+
+def menu():
+    print()
+    print()
+    print("1. Registrar nuevo socio")
+    print("2. Registrar ingreso (Restar dia)")
+    print("3. Ver socios activos")
+    print("4. Ver socios inactivos")
+    print("5. Consultar informacion de un socio (por DNI)")
+    print("6. Ver estado general del gimnasio")
+    print("7. Salir")
+    print()
+    print()
+    
+    op = int(input("Ingrese una opcion: "))
+    return op
 
 
-class Gimnasio:
-    def __init__(self, nombre_gimnasio):
-        self.nombre_gimnasio = nombre_gimnasio
-        self.socios = []  
+while True:
 
-    def setSocio(self, un_socio):
-        
+    op = menu()
+
+    if op == 1:
+        dni = input("Ingrese DNI: ")
+        nombre = input("Ingrese Nombre y Apellido: ")
+        membresia = input("Ingrese tipo de membresia (Musculacion/Crossfit/General): ")
+        try:
+            dias = int(input("Ingrese dias disponibles: "))
+            nuevo_socio = Socio(dni, nombre, membresia, dias)
+            gym.setSocio(nuevo_socio)
+        except ValueError:
+            print("Los dias deben ser un numero entero.")
+
+    elif op == 2:
+        dni = input("Ingrese el DNI del socio: ")
+        gym.darIngreso(dni)
+
+    elif op == 3:
+        gym.getActivos()
+
+    elif op == 4:
+        gym.getInactivos()
+
+    elif op == 5:
+        dni = input("Ingrese el DNI a buscar: ")
         encontrado = False
-        for s in self.socios:
-            if s.dni == un_socio.dni:
-                encontrado = True
-        
-        if encontrado:
-            print("Ya existe un socio registrado con el DNI:", un_socio.dni)
-        else:
-            self.socios.append(un_socio)
-            print("Socio", un_socio.nombre, "registrado correctamente.")
-
-    def darIngreso(self, dni):
-        encontrado = False
-        for s in self.socios:
+        for s in gym.socios:
             if s.dni == dni:
+                s.getInfo()
                 encontrado = True
-                if not s.activo or s.dias_restantes <= 0:
-                    print("Ingreso denegado. La membresia de", s.nombre, "esta inactiva.")
-                else:
-                    s.restarDia()
-                    print("Ingreso registrado a:", s.nombre)
-                    print("Se ha descontado 1 dia. Dias restantes:", s.dias_restantes)
-        
         if not encontrado:
-            print("El DNI", dni, "no se encuentra registrado en el sistema.")
+            print("No se encontro ningun socio con ese DNI.")
 
-    def getActivos(self):
-        print("LISTA DE SOCIOS ACTIVOS")
-        contador = 0
-        for s in self.socios:
-            if s.activo and s.dias_restantes > 0:
-                s.getInfo()
-                print("-" * 20)
-                contador = contador + 1
-        print("Total de socios activos:", contador)
+    elif op == 6:
+        gym.getEstadoGeneral()
 
-    def getInactivos(self):
-        print("LISTA DE SOCIOS INACTIVOS")
-        contador = 0
-        for s in self.socios:
-            if not s.activo or s.dias_restantes <= 0:
-                s.getInfo()
-                print("-" * 20)
-                contador = contador + 1
-        print("Total de socios inactivos:", contador)
-
-    def getEstadoGeneral(self):
-        print("ESTADO GENERAL:", self.nombre_gimnasio)
-        total = len(self.socios)
-        activos = 0
-        inactivos = 0
-        for s in self.socios:
-            if s.activo and s.dias_restantes > 0:
-                activos = activos + 1
-            else:
-                inactivos = inactivos + 1
-        print("Total de socios registrados:", total)
-        print("Socios activos:", activos)
-        print("Socios inactivos:", inactivos)
+    elif op == 7:
+        break
+    else:
+        print("No elegiste ninguna opcion fraca")
                     
