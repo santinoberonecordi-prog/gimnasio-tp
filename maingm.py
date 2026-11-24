@@ -1,4 +1,4 @@
-from Gimnasio import Socio, Gimnasio
+from gym import Socio, Gimnasio
 
 gym = Gimnasio("Space Gym")
 
